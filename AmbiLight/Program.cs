@@ -20,12 +20,12 @@ namespace AmbiLight
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            // Application.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            // this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             Application.Run(new Form1());
-
-            Thread.Sleep(Timeout.Infinite);
         }
 
-        private static void Capture()
+        public static Image Capture()
         {
             try
             {
@@ -34,9 +34,6 @@ namespace AmbiLight
 
                 //Creating a new Bitmap object
                 Bitmap captureBitmap = new Bitmap(captureRectangle.Size.Width, captureRectangle.Size.Height, PixelFormat.Format32bppArgb);
-
-                //Creating a Rectangle object which will  
-                //capture our Current Screen
                 
                 //Creating a New Graphics Object
                 Graphics captureGraphics = Graphics.FromImage(captureBitmap);
@@ -44,14 +41,14 @@ namespace AmbiLight
                 //Copying Image from The Screen
                 captureGraphics.CopyFromScreen(0, 0, 0, 0, captureRectangle.Size);
 
-                int width = 16;
-                int height = 9;
+                int width = 800;
+                int height = 450;
                 
                 Rectangle destRect = new Rectangle(0, 0, width, height);
-                Bitmap destBitmap = new Bitmap(width, height);
-                Graphics destGraphics = Graphics.FromImage(destBitmap);
-
+                Bitmap destBitmap = new Bitmap(width, height);                
                 destBitmap.SetResolution(captureBitmap.HorizontalResolution, captureBitmap.VerticalResolution);
+
+                Graphics destGraphics = Graphics.FromImage(destBitmap);
 
                 destGraphics.CompositingMode = CompositingMode.SourceCopy;
                 destGraphics.CompositingQuality = CompositingQuality.HighQuality;
@@ -64,9 +61,9 @@ namespace AmbiLight
                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
                     destGraphics.DrawImage(captureBitmap, destRect, 0, 0, captureBitmap.Width, captureBitmap.Height, GraphicsUnit.Pixel, wrapMode);
                 }
-
-
-
+                
+                return (Image)destBitmap;
+                
                 //Saving the Image File (I am here Saving it in My E drive).
                 //captureBitmap.Save(@"E:\Capture.jpg", ImageFormat.Jpeg);
 
@@ -76,6 +73,7 @@ namespace AmbiLight
             }
             catch (Exception ex)
             {
+                return null;
                 // MessageBox.Show(ex.Message);
             }
         }

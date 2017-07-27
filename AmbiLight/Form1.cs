@@ -15,6 +15,14 @@ namespace AmbiLight
         public Form1()
         {
             InitializeComponent();
+            timer.Tick += new EventHandler(timer_Tick);
+            timer.Enabled = true;
+        }
+
+        //The event that is animating the Frames
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            picture.Image = Program.Capture();
         }
     }
 }
