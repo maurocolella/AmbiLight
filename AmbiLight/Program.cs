@@ -11,8 +11,11 @@ using System.Net.WebSockets;
 
 namespace AmbiLight
 {
+
     static class Program
     {
+        private static ClientWebSocket ws;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -23,6 +26,11 @@ namespace AmbiLight
             Application.SetCompatibleTextRenderingDefault(false);
             // this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             // this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+
+            ws = new ClientWebSocket();
+            Uri uri = new Uri("ws://localhost:3000/");
+            ws.ConnectAsync(uri, CancellationToken.None);
+
             Application.Run(new Form1());
         }
 
@@ -72,11 +80,7 @@ namespace AmbiLight
                 Image ambiImage = Resize(captureBitmap, 32, 18);
                 captureGraphics.Dispose();
                 captureBitmap.Dispose();
-
-                ClientWebSocket ws = new ClientWebSocket();
-                Uri uri = new Uri("ws://localhost:3000/");
-                ws.ConnectAsync(uri, CancellationToken.None);
-
+                
                 return Resize(ambiImage, width, height);
                 
                 //Saving the Image File (I am here Saving it in My E drive).
