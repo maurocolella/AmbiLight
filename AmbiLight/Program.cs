@@ -25,6 +25,29 @@ namespace AmbiLight
             Application.Run(new Form1());
         }
 
+        private static Image Resize(Image input, int width, int height)
+        {
+            Rectangle destRect = new Rectangle(0, 0, width, height);
+            Bitmap destBitmap = new Bitmap(width, height);
+            destBitmap.SetResolution(input.HorizontalResolution, input.VerticalResolution);
+
+            Graphics destGraphics = Graphics.FromImage(destBitmap);
+
+            destGraphics.CompositingMode = CompositingMode.SourceCopy;
+            destGraphics.CompositingQuality = CompositingQuality.HighQuality;
+            destGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            destGraphics.SmoothingMode = SmoothingMode.HighQuality;
+            destGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            using (var wrapMode = new ImageAttributes())
+            {
+                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                destGraphics.DrawImage(input, destRect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
+            }
+
+            return (Image)destBitmap;
+        }
+
         public static Image Capture()
         {
             try
@@ -44,25 +67,7 @@ namespace AmbiLight
                 int width = 800;
                 int height = 450;
                 
-                Rectangle destRect = new Rectangle(0, 0, width, height);
-                Bitmap destBitmap = new Bitmap(width, height);                
-                destBitmap.SetResolution(captureBitmap.HorizontalResolution, captureBitmap.VerticalResolution);
-
-                Graphics destGraphics = Graphics.FromImage(destBitmap);
-
-                destGraphics.CompositingMode = CompositingMode.SourceCopy;
-                destGraphics.CompositingQuality = CompositingQuality.HighQuality;
-                destGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                destGraphics.SmoothingMode = SmoothingMode.HighQuality;
-                destGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    destGraphics.DrawImage(captureBitmap, destRect, 0, 0, captureBitmap.Width, captureBitmap.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-                
-                return (Image)destBitmap;
+                return Resize(captureBitmap, width, height);
                 
                 //Saving the Image File (I am here Saving it in My E drive).
                 //captureBitmap.Save(@"E:\Capture.jpg", ImageFormat.Jpeg);
