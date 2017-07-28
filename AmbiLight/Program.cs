@@ -82,23 +82,53 @@ namespace AmbiLight
             int[,] result = new int[bmp.Width * 2 + (bmp.Height - 2) * 2,3];
             int pos = 0;
 
-            
-
-            for (int y = 0; y < bmp.Height; y++)
+            // Right column, bottom to top
+            for (int y = bmp.Height - 2; y > 0; y--)
             {
                 var row = ptr + (y * bmpData.Stride);
+                var pixel = row + ((bmp.Width - 1) * 4);
 
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    var pixel = row + x * 4; // ARGB has 4 bytes per pixel
-                    if(y == 0 || y == bmp.Height -1 || x == 0  || x == bmp.Width - 1)
-                    {
-                        result[pos, 0] = pixel[2];
-                        result[pos, 1] = pixel[1];
-                        result[pos, 2] = pixel[0];
-                        pos++;
-                    }
-                }
+                result[pos, 0] = pixel[2];
+                result[pos, 1] = pixel[1];
+                result[pos, 2] = pixel[0];
+                pos++;
+            }
+
+            // Top row, right to left
+            for (int x = bmp.Width - 1; x >= 0; x--)
+            {
+                var row = ptr;
+                var pixel = row + x * 4;
+
+                result[pos, 0] = pixel[2];
+                result[pos, 1] = pixel[1];
+                result[pos, 2] = pixel[0];
+                pos++;
+            }
+
+            
+            // Left column, top to bottom
+            for (int y = 1; y < bmp.Height - 1; y++)
+            {
+                var row = ptr + (y * bmpData.Stride);
+                var pixel = row;
+
+                result[pos, 0] = pixel[2];
+                result[pos, 1] = pixel[1];
+                result[pos, 2] = pixel[0];
+                pos++;
+            }
+
+            // Bottom row, left to right
+            for (int x = 0; x < bmp.Width; x++)
+            {
+                var row = ptr + ((bmp.Height - 1) * bmpData.Stride);
+                var pixel = row + x * 4;
+
+                result[pos, 0] = pixel[2];
+                result[pos, 1] = pixel[1];
+                result[pos, 2] = pixel[0];
+                pos++;
             }
 
             return result;
