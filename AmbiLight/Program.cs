@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Net.WebSockets;
+using System.Text;
 
 namespace AmbiLight
 {
@@ -80,7 +81,11 @@ namespace AmbiLight
                 Image ambiImage = Resize(captureBitmap, 32, 18);
                 captureGraphics.Dispose();
                 captureBitmap.Dispose();
-                
+
+                var encoded = Encoding.UTF8.GetBytes("Sample string over websocket");
+                var buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
+                ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+
                 return Resize(ambiImage, width, height);
                 
                 //Saving the Image File (I am here Saving it in My E drive).
