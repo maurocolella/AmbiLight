@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 //using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Net.WebSockets;
 
 namespace AmbiLight
 {
@@ -20,7 +21,7 @@ namespace AmbiLight
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            // Application.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            // this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             // this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             Application.Run(new Form1());
         }
@@ -71,6 +72,10 @@ namespace AmbiLight
                 Image ambiImage = Resize(captureBitmap, 32, 18);
                 captureGraphics.Dispose();
                 captureBitmap.Dispose();
+
+                ClientWebSocket ws = new ClientWebSocket();
+                Uri uri = new Uri("ws://localhost:3000/");
+                ws.ConnectAsync(uri, CancellationToken.None);
 
                 return Resize(ambiImage, width, height);
                 
