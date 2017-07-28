@@ -91,9 +91,9 @@ namespace AmbiLight
                     var pixel = row + x * 4; // ARGB has 4 bytes per pixel
                     if(y == 0 || y == bmp.Height -1 || x == 0  || x == bmp.Width - 1)
                     {
-                        result += pixel[1] + ",";
                         result += pixel[2] + ",";
-                        result += pixel[3] + "|";
+                        result += pixel[1] + ",";
+                        result += pixel[0] + "|";
                         pos++;
                     }
                 }
