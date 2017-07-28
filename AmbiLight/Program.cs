@@ -35,7 +35,7 @@ namespace AmbiLight
 
             destGraphics.CompositingMode = CompositingMode.SourceCopy;
             destGraphics.CompositingQuality = CompositingQuality.HighQuality;
-            destGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            destGraphics.InterpolationMode = InterpolationMode.Bicubic;
             destGraphics.SmoothingMode = SmoothingMode.HighQuality;
             destGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
@@ -66,8 +66,10 @@ namespace AmbiLight
 
                 int width = 800;
                 int height = 450;
-                
-                return Resize(captureBitmap, width, height);
+
+                Image ambiImage = Resize(captureBitmap, 16, 9);
+
+                return Resize(ambiImage, width, height);
                 
                 //Saving the Image File (I am here Saving it in My E drive).
                 //captureBitmap.Save(@"E:\Capture.jpg", ImageFormat.Jpeg);
