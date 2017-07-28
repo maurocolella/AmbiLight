@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 using System.Net.WebSockets;
 using System.Text;
 using System.IO;
+using System.Web.Script.Serialization;
 
 namespace AmbiLight
 {
@@ -60,7 +61,7 @@ namespace AmbiLight
             return (Image)destBitmap;
         }
 
-        private static unsafe string CreateArray(Bitmap bmp)
+        private static unsafe int[,] CreateArray(Bitmap bmp)
         {
             // Note that is it somewhat a standard
             // to define 2d array access by [y,x] (not [x,y])
@@ -78,9 +79,10 @@ namespace AmbiLight
             // Declare an array to hold the bytes of the bitmap. 
             int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
             byte[] rgbValues = new byte[bytes];
-            //int[,] result = new int[bmp.Width * 2 + (bmp.Height - 2) * 2,3];
-            string result = "";
+            int[,] result = new int[bmp.Width * 2 + (bmp.Height - 2) * 2,3];
             int pos = 0;
+
+            
 
             for (int y = 0; y < bmp.Height; y++)
             {
@@ -91,9 +93,9 @@ namespace AmbiLight
                     var pixel = row + x * 4; // ARGB has 4 bytes per pixel
                     if(y == 0 || y == bmp.Height -1 || x == 0  || x == bmp.Width - 1)
                     {
-                        result += pixel[2] + ",";
-                        result += pixel[1] + ",";
-                        result += pixel[0] + "|";
+                        result[pos, 0] = pixel[2];
+                        result[pos, 1] = pixel[1];
+                        result[pos, 2] = pixel[0];
                         pos++;
                     }
                 }
@@ -126,7 +128,9 @@ namespace AmbiLight
                 captureGraphics.Dispose();
                 captureBitmap.Dispose();
 
-                byte[] encoded = Encoding.UTF8.GetBytes(CreateArray(new Bitmap(ambiImage)));
+                int[,] colorArray = CreateArray(new Bitmap(ambiImage));
+                JavaScriptSerializer json = new JavaScriptSerializer();
+                byte[] encoded = Encoding.UTF8.GetBytes(json.Serialize(colorArray));
                 var buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
                 ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
 
