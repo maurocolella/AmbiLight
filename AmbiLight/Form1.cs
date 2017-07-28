@@ -22,7 +22,11 @@ namespace AmbiLight
         //The event that is animating the Frames
         private void timer_Tick(object sender, EventArgs e)
         {
-            picture.Image = Program.Capture();
+            if (picture.Image != null) picture.Image.Dispose();
+            Image newImage = Program.Capture();
+            if (newImage != null) {
+                picture.Image = newImage;
+            }
         }
     }
 }

@@ -39,12 +39,13 @@ namespace AmbiLight
             destGraphics.SmoothingMode = SmoothingMode.HighQuality;
             destGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            using (var wrapMode = new ImageAttributes())
-            {
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                destGraphics.DrawImage(input, destRect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
-            }
+            ImageAttributes wrapMode = new ImageAttributes();
+            
+            wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+            destGraphics.DrawImage(input, destRect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
 
+            input.Dispose();
+            destGraphics.Dispose();
             return (Image)destBitmap;
         }
 
@@ -68,6 +69,8 @@ namespace AmbiLight
                 int height = 450;
 
                 Image ambiImage = Resize(captureBitmap, 16, 9);
+                captureGraphics.Dispose();
+                captureBitmap.Dispose();
 
                 return Resize(ambiImage, width, height);
                 
