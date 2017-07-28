@@ -34,10 +34,10 @@ namespace AmbiLight
             Graphics destGraphics = Graphics.FromImage(destBitmap);
 
             destGraphics.CompositingMode = CompositingMode.SourceCopy;
-            destGraphics.CompositingQuality = CompositingQuality.HighQuality;
+            destGraphics.CompositingQuality = CompositingQuality.HighSpeed;
             destGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            destGraphics.SmoothingMode = SmoothingMode.HighQuality;
-            destGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            destGraphics.SmoothingMode = SmoothingMode.None;
+            destGraphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 
             ImageAttributes wrapMode = new ImageAttributes();
             
@@ -68,7 +68,7 @@ namespace AmbiLight
                 int width = 800;
                 int height = 450;
 
-                Image ambiImage = Resize(captureBitmap, 16, 9);
+                Image ambiImage = Resize(captureBitmap, 32, 18);
                 captureGraphics.Dispose();
                 captureBitmap.Dispose();
 

@@ -44,7 +44,7 @@
             // 
             // timer
             // 
-            this.timer.Interval = 40;
+            this.timer.Interval = 20;
             // 
             // Form1
             // 
