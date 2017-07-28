@@ -35,7 +35,7 @@ namespace AmbiLight
 
             destGraphics.CompositingMode = CompositingMode.SourceCopy;
             destGraphics.CompositingQuality = CompositingQuality.HighQuality;
-            destGraphics.InterpolationMode = InterpolationMode.Bicubic;
+            destGraphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
             destGraphics.SmoothingMode = SmoothingMode.HighQuality;
             destGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
