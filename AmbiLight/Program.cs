@@ -9,6 +9,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Net.WebSockets;
 using System.Text;
+using System.IO;
 
 namespace AmbiLight
 {
@@ -59,6 +60,49 @@ namespace AmbiLight
             return (Image)destBitmap;
         }
 
+        private static unsafe string CreateArray(Bitmap bmp)
+        {
+            // Note that is it somewhat a standard
+            // to define 2d array access by [y,x] (not [x,y])
+            bool[,] bwValues = new bool[bmp.Height, bmp.Width];
+
+            // Lock the bitmap's bits.  
+            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            BitmapData bmpData =
+                bmp.LockBits(rect, ImageLockMode.ReadWrite,
+                bmp.PixelFormat);
+
+            // Get the address of the first line.
+            byte* ptr = (byte*)bmpData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap. 
+            int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
+            byte[] rgbValues = new byte[bytes];
+            //int[,] result = new int[bmp.Width * 2 + (bmp.Height - 2) * 2,3];
+            string result = "";
+            int pos = 0;
+
+            for (int y = 0; y < bmp.Height; y++)
+            {
+                var row = ptr + (y * bmpData.Stride);
+
+                for (int x = 0; x < bmp.Width; x++)
+                {
+                    var pixel = row + x * 4; // ARGB has 4 bytes per pixel
+                    if(y == 0 || y == bmp.Height -1 || x == 0  || x == bmp.Width - 1)
+                    {
+                        result += pixel[1] + ",";
+                        result += pixel[2] + ",";
+                        result += pixel[3] + "|";
+                        pos++;
+                    }
+                }
+            }
+
+            return result;
+            // Do whatever you want with vwValues here
+        }
+
         public static Image Capture()
         {
             try
@@ -82,11 +126,12 @@ namespace AmbiLight
                 captureGraphics.Dispose();
                 captureBitmap.Dispose();
 
-                var encoded = Encoding.UTF8.GetBytes("Sample string over websocket");
+                byte[] encoded = Encoding.UTF8.GetBytes(CreateArray(new Bitmap(ambiImage)));
                 var buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
                 ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
 
                 return Resize(ambiImage, width, height);
+                
                 
                 //Saving the Image File (I am here Saving it in My E drive).
                 //captureBitmap.Save(@"E:\Capture.jpg", ImageFormat.Jpeg);
